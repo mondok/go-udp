@@ -1,12 +1,22 @@
 package udpserver
 
 import (
+	"encoding/json"
 	"fmt"
 	"net"
 )
 
 type UDPServer struct {
 	Port string
+}
+
+type ClientMessage struct {
+	ID   string `json:"id"`
+	Body string `json:"body"`
+}
+
+func (c *ClientMessage) ToJSON() ([]byte, error) {
+	return json.Marshal(c)
 }
 
 func New(port string) *UDPServer {
@@ -32,10 +42,16 @@ func (u *UDPServer) Open() error {
 
 	for {
 		n, addr, err := ServerConn.ReadFromUDP(buf)
-		fmt.Println("Received ", string(buf[0:n]), " from ", addr)
-
+		msg, _ := toClientMessage(buf, n)
+		fmt.Println("Message ", msg.Body, " from ", addr)
 		if err != nil {
 			return err
 		}
 	}
+}
+
+func toClientMessage(byteArr []byte, bytesAvail int) (*ClientMessage, error) {
+	var clientMsg *ClientMessage
+	err := json.Unmarshal(byteArr[0:bytesAvail], &clientMsg)
+	return clientMsg, err
 }

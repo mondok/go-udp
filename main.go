@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net"
-	"strconv"
 	"time"
 
 	"github.com/mondok/goudp/udpserver"
@@ -35,11 +34,11 @@ func exampleClient(address string) {
 	}
 
 	defer Conn.Close()
-	i := 0
 	for {
-		msg := strconv.Itoa(i)
-		i++
-		buf := []byte(msg)
+		msg := &udpserver.ClientMessage{}
+		msg.ID = "123"
+		msg.Body = "Hello World"
+		buf, _ := msg.ToJSON()
 		_, err := Conn.Write(buf)
 		if err != nil {
 			fmt.Println(msg, err)
