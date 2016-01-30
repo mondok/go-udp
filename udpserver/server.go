@@ -1,26 +1,16 @@
 package udpserver
 
 import (
-	"encoding/json"
 	"fmt"
 	"net"
+
+	"github.com/golang/protobuf/proto"
+	"github.com/mondok/go-udp/udpserver"
 )
 
 // UDPServer is the server type
 type UDPServer struct {
 	Port string
-}
-
-// ClientMessage is a message sent from a client UDP connection
-// to the server
-type ClientMessage struct {
-	ID   string `json:"id"`
-	Body string `json:"body"`
-}
-
-// ToJSON converts a ClientMessage to json
-func (c *ClientMessage) ToJSON() ([]byte, error) {
-	return json.Marshal(c)
 }
 
 // New creates a new UDPServer
@@ -57,8 +47,8 @@ func (u *UDPServer) Open() error {
 }
 
 // toClientMessage unmarshals byte[] to ClientMessage
-func toClientMessage(byteArr []byte, bytesAvail int) (*ClientMessage, error) {
-	var clientMsg *ClientMessage
-	err := json.Unmarshal(byteArr[0:bytesAvail], &clientMsg)
+func toClientMessage(byteArr []byte, bytesAvail int) (*udpserver.ClientMessage, error) {
+	var clientMsg *udpserver.ClientMessage
+	proto.Unmarshal(byteArr, &clientMsg)
 	return clientMsg, err
 }

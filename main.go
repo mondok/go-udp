@@ -5,7 +5,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/mondok/goudp/udpserver"
+	"github.com/mondok/go-udp/udpserver"
 )
 
 func main() {

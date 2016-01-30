@@ -1,0 +1,6 @@
+package udpserver;
+
+message ClientMessage {
+  required string id = 1;
+  required string body = 2;
+}
